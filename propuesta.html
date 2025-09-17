@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pregunta Importante 💖</title>
+  <style>
+    :root{
+      --gap: clamp(16px, 3vw, 28px);
+      --btn-font: clamp(16px, 2.8vw, 22px);
+      --title-size: clamp(24px, 5vw, 44px);
+      --btn-pad-y: clamp(10px, 2.2vh, 16px);
+      --btn-pad-x: clamp(16px, 5vw, 28px);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right)
+               env(safe-area-inset-bottom) env(safe-area-inset-left);
+      min-height: 100svh; /* viewport estable en móvil */
+      display: grid;
+      place-items: center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #ffd1dc 0%, #ffe6ea 100%);
+      overflow: hidden; /* evita scroll */
+      touch-action: manipulation; /* mejor respuesta al toque */
+    }
+
+    .wrap {
+      width: min(960px, 100%);
+      height: min(100%, 100svh);
+      display: grid;
+      grid-template-rows: auto 1fr;
+      align-items: start;
+      justify-items: center;
+      gap: var(--gap);
+      padding: var(--gap);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: var(--title-size);
+      line-height: 1.15;
+      text-align: center;
+      color: #7a1b3a;
+      text-shadow: 0 2px 12px rgba(122, 27, 58, 0.15);
+    }
+
+    /* Zona donde “juegan” los botones */
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: calc(var(--radius) * 1.6);
+      background: rgba(255,255,255,0.55);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    button {
+      position: absolute; /* ambos para poder ubicar libremente */
+      padding: var(--btn-pad-y) var(--btn-pad-x);
+      font-size: var(--btn-font);
+      border: 0;
+      border-radius: var(--radius);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+      transition: transform .08s ease;
+    }
+    button:active { transform: scale(0.98); }
+
+    #si {
+      background: #22c55e;
+      color: #fff;
+      left: 50%;
+      top: 62%;
+      transform: translate(-50%, -50%);
+    }
+
+    #no {
+      background: #ef4444;
+      color: #fff;
+      left: 35%;
+      top: 62%;
+    }
+
+    /* Pequeños ajustes para pantallas muy angostas */
+    @media (max-width: 360px) {
+      #si, #no { top: 65%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="wrap">
+    <h1>¿Quieres ser mi novia? 💕</h1>
+    <div class="stage" id="stage">
+      <button id="si" type="button">Sí 💖</button>
+      <button id="no" type="button">No 😅</button>
+    </div>
+  </div>
+
+  <script>
+    const btnSi = document.getElementById('si');
+    const btnNo = document.getElementById('no');
+    const stage = document.getElementById('stage');
+
+    btnSi.addEventListener('click', () => {
+      alert('¡Sabía que dirías que SÍ! 💘');
+    });
+
+    // Mueve el botón "No" a una posición aleatoria dentro de stage
+    function moverNo() {
+      const bounds = stage.getBoundingClientRect();
+      // medidas reales del botón
+      const bw = btnNo.offsetWidth;
+      const bh = btnNo.offsetHeight;
+
+      // límites internos del contenedor
+      const maxX = bounds.width - bw;
+      const maxY = bounds.height - bh;
+
+      // posición aleatoria segura
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      btnNo.style.left = x + 'px';
+      btnNo.style.top = y + 'px';
+    }
+
+    // Alejarse si el puntero/tacto se acerca demasiado
+    const UMBRAL = 90; // en px; puedes subirlo si eres "muy insistente" 😄
+    function proximidadEvade(e) {
+      const pX = e.clientX ?? (e.touches && e.touches[0]?.clientX);
+      const pY = e.clientY ?? (e.touches && e.touches[0]?.clientY);
+      if (pX == null || pY == null) return;
+
+      const r = btnNo.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dist = Math.hypot(pX - cx, pY - cy);
+
+      if (dist < UMBRAL) moverNo();
+    }
+
+    // Eventos para mouse y pantallas táctiles
+    btnNo.addEventListener('pointerenter', moverNo); // hover
+    btnNo.addEventListener('pointerdown', moverNo);  // intento de toque/click
+    stage.addEventListener('pointermove', proximidadEvade, { passive: true });
+
+    // Recalcular límites si cambia el tamaño (rotación, barras del navegador, etc.)
+    window.addEventListener('resize', () => {
+      // Asegura que el botón "No" permanezca visible tras un resize
+      const st = stage.getBoundingClientRect();
+      const bw = btnNo.offsetWidth, bh = btnNo.offsetHeight;
+      const x = Math.min(parseFloat(btnNo.style.left || 0), st.width - bw);
+      const y = Math.min(parseFloat(btnNo.style.top  || 0), st.height - bh);
+      btnNo.style.left = Math.max(0, x) + 'px';
+      btnNo.style.top  = Math.max(0, y) + 'px';
+    });
+
+    // Colocación inicial aleatoria del "No"
+    moverNo();
+  </script>
+</body>
+</html>
