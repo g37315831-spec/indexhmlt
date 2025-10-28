@@ -2,20 +2,23 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chat Box</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
             background: #0a0a0a;
             height: 100vh;
             overflow: hidden;
+            position: fixed;
+            width: 100%;
         }
 
         /* Tela de Login */
@@ -31,33 +34,33 @@
 
         #loginScreen h1 {
             color: white;
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2.8em;
+            margin-bottom: 15px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         #loginScreen p {
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 30px;
-            font-size: 1.1em;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 35px;
+            font-size: 1.2em;
         }
 
         .login-box {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 35px 25px;
+            border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             width: 100%;
-            max-width: 350px;
+            max-width: 380px;
         }
 
         .login-box input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
+            padding: 18px 16px;
+            border: 2px solid #e1e1e1;
             border-radius: 8px;
-            font-size: 16px;
-            margin-bottom: 15px;
+            font-size: 17px;
+            margin-bottom: 16px;
             transition: border 0.3s;
         }
 
@@ -68,26 +71,28 @@
 
         .login-box button {
             width: 100%;
-            padding: 15px;
+            padding: 18px;
             background: #25D366;
             color: white;
             border: none;
             border-radius: 8px;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             transition: background 0.3s;
+            margin-top: 8px;
         }
 
-        .login-box button:hover {
-            background: #20bd5a;
+        .login-box button:active {
+            background: #1da851;
         }
 
         .error-msg {
             color: #e74c3c;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 15px;
             display: none;
+            font-size: 15px;
         }
 
         /* Chat Screen */
@@ -100,58 +105,90 @@
 
         /* Header */
         .chat-header {
-            background: #128C7E;
+            background: #075E54;
             color: white;
-            padding: 15px 20px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            gap: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            min-height: 60px;
         }
 
         .chat-header img {
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: white;
         }
 
         .chat-header h2 {
             flex: 1;
-            font-size: 1.2em;
+            font-size: 1.15em;
+            font-weight: 500;
         }
 
         .logout-btn {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
             border: none;
             color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 9px 16px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 500;
+        }
+
+        .logout-btn:active {
+            background: rgba(255,255,255,0.25);
         }
 
         /* Messages Area */
         .messages-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            overflow-x: hidden;
+            padding: 12px 8px;
             background: #0d1418;
             background-image: 
-                linear-gradient(rgba(13, 20, 24, 0.9), rgba(13, 20, 24, 0.9)),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23ffffff" opacity="0.02" width="100" height="100"/></svg>');
+                linear-gradient(rgba(13, 20, 24, 0.92), rgba(13, 20, 24, 0.92)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23ffffff" opacity="0.015" width="100" height="100"/></svg>');
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .welcome-message div:first-child {
+            font-size: 70px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message h3 {
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            font-weight: 400;
+        }
+
+        .welcome-message p {
+            font-size: 15px;
+            line-height: 1.6;
         }
 
         .message {
             display: flex;
-            margin-bottom: 15px;
-            animation: slideIn 0.3s ease;
+            margin-bottom: 8px;
+            animation: slideIn 0.2s ease;
         }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(5px);
             }
             to {
                 opacity: 1;
@@ -164,149 +201,154 @@
         }
 
         .message-bubble {
-            max-width: 70%;
-            padding: 10px 15px;
-            border-radius: 10px;
+            max-width: 75%;
+            padding: 8px 12px;
+            border-radius: 8px;
             position: relative;
             word-wrap: break-word;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.15);
         }
 
         .message.received .message-bubble {
             background: #1f2c33;
             color: #e9edef;
-            border-radius: 0 10px 10px 10px;
+            border-radius: 0 8px 8px 8px;
+            margin-left: 4px;
         }
 
         .message.sent .message-bubble {
             background: #005c4b;
             color: white;
-            border-radius: 10px 0 10px 10px;
+            border-radius: 8px 0 8px 8px;
+            margin-right: 4px;
         }
 
         .message-bubble img,
         .message-bubble video {
             max-width: 100%;
-            border-radius: 8px;
-            margin-top: 5px;
+            border-radius: 6px;
+            margin-top: 4px;
             display: block;
         }
 
         .message-time {
             font-size: 11px;
-            color: rgba(255,255,255,0.5);
-            margin-top: 5px;
+            color: rgba(255,255,255,0.45);
+            margin-top: 4px;
             text-align: right;
         }
 
         .message-username {
-            font-size: 12px;
+            font-size: 13px;
             color: #25D366;
-            font-weight: bold;
-            margin-bottom: 3px;
+            font-weight: 600;
+            margin-bottom: 2px;
         }
 
-        /* Input Area */
+        /* Input Area - Estilo WhatsApp */
         .input-container {
             background: #1f2c33;
-            padding: 10px 15px;
+            padding: 8px 8px 8px 8px;
             display: flex;
-            gap: 10px;
+            gap: 6px;
+            align-items: flex-end;
+            min-height: 62px;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            background: #2a3942;
+            border-radius: 22px;
+            display: flex;
             align-items: center;
+            padding: 0 12px;
+            min-height: 44px;
         }
 
         .input-container input[type="text"] {
             flex: 1;
-            padding: 12px 15px;
+            padding: 12px 8px;
             border: none;
-            border-radius: 25px;
-            background: #2a3942;
-            color: white;
-            font-size: 15px;
+            background: transparent;
+            color: #e9edef;
+            font-size: 16px;
             outline: none;
         }
 
         .input-container input[type="text"]::placeholder {
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.4);
         }
 
         .attach-btn,
         .send-btn {
-            background: #25D366;
             border: none;
-            color: white;
-            width: 45px;
-            height: 45px;
+            color: #8696a0;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.3s;
+            flex-shrink: 0;
+            background: transparent;
         }
 
         .attach-btn {
-            background: #2a3942;
+            margin-right: 4px;
         }
 
-        .attach-btn:hover {
-            background: #3a4952;
+        .send-btn {
+            background: #25D366;
+            color: white;
+            font-size: 20px;
         }
 
-        .send-btn:hover {
-            background: #20bd5a;
+        .send-btn:active {
+            background: #1da851;
         }
 
-        .send-btn:active,
         .attach-btn:active {
-            transform: scale(0.95);
+            background: rgba(255,255,255,0.05);
         }
 
         input[type="file"] {
             display: none;
         }
 
-        /* Responsividade */
-        @media (max-width: 600px) {
-            .message-bubble {
-                max-width: 85%;
-            }
-            
-            #loginScreen h1 {
-                font-size: 2em;
-            }
-            
-            .login-box {
-                padding: 25px;
-            }
-        }
-
         /* Loading indicator */
         .loading {
             text-align: center;
             color: rgba(255,255,255,0.5);
-            padding: 10px;
+            padding: 12px;
             font-size: 14px;
         }
 
-        .media-preview {
-            position: relative;
-            display: inline-block;
-        }
-
         .loading-spinner {
-            border: 3px solid rgba(255,255,255,0.3);
+            border: 3px solid rgba(255,255,255,0.2);
             border-top: 3px solid #25D366;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
+            width: 32px;
+            height: 32px;
+            animation: spin 0.8s linear infinite;
             margin: 10px auto;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Remover seleção de texto */
+        body {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        input, textarea {
+            -webkit-user-select: text;
+            user-select: text;
         }
     </style>
 </head>
@@ -332,11 +374,11 @@
         </div>
 
         <div class="messages-container" id="messagesContainer">
-            <div class="welcome-message" style="text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
-                <div style="font-size: 60px; margin-bottom: 20px;">💬</div>
-                <h3 style="color: rgba(255,255,255,0.7); margin-bottom: 10px;">Bem-vindo ao Chat Box!</h3>
-                <p>Digite uma mensagem abaixo ou envie uma foto/vídeo</p>
-                <p style="margin-top: 20px; font-size: 14px;">📎 = Enviar foto/vídeo<br>✏️ = Digite sua mensagem<br>➤ = Enviar</p>
+            <div class="welcome-message">
+                <div>💬</div>
+                <h3>Bem-vindo ao Chat Box!</h3>
+                <p>Digite uma mensagem ou envie uma foto/vídeo</p>
+                <p style="margin-top: 20px; font-size: 14px;">📎 Enviar mídia<br>✏️ Digite aqui<br>➤ Enviar</p>
             </div>
         </div>
 
@@ -345,7 +387,9 @@
                 📎
             </button>
             <input type="file" id="fileInput" accept="image/*,video/*" onchange="handleFileSelect(event)">
-            <input type="text" id="messageInput" placeholder="Digite uma mensagem..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <div class="input-wrapper">
+                <input type="text" id="messageInput" placeholder="Mensagem" onkeypress="if(event.key==='Enter') sendMessage()">
+            </div>
             <button class="send-btn" onclick="sendMessage()">
                 ➤
             </button>
@@ -528,7 +572,7 @@
             event.target.value = '';
         }
 
-        // Bloquear print screen (dificulta mas não bloqueia 100%)
+        // Bloquear print screen
         document.addEventListener('keydown', function(e) {
             if (e.keyCode == 44 || (e.keyCode == 83 && e.ctrlKey) || e.keyCode == 123) {
                 e.preventDefault();
@@ -537,10 +581,6 @@
         });
 
         document.addEventListener('contextmenu', e => e.preventDefault());
-
-        // Desabilitar seleção de texto
-        document.body.style.userSelect = 'none';
-        document.body.style.webkitUserSelect = 'none';
     </script>
 </body>
 </html>
