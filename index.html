@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chat Box</title>
     <style>
+        :root {
+            /* Cores Dark Mode Otimizadas (Tema WhatsApp) */
+            --color-bg-body: #0a0a0a; /* Fundo do Corpo */
+            --color-bg-chat: #0d1418; /* Fundo das Mensagens */
+            --color-header: #075E54; /* Header Principal */
+            --color-sent: #005c4b; /* Balão Enviado */
+            --color-received: #1f2c33; /* Balão Recebido */
+            --color-input-bg: #2a3942; /* Fundo do Input */
+            --color-send-btn: #25D366; /* Botão Enviar */
+            --color-text: #e9edef; /* Cor do Texto Principal */
+            --color-text-sub: rgba(255, 255, 255, 0.45); /* Cor Secundária (Hora) */
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,12 +26,17 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-            background: #0a0a0a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--color-bg-body);
             height: 100vh;
             overflow: hidden;
             position: fixed;
             width: 100%;
+        }
+
+        /* OTIMIZAÇÃO: Fonte um pouco mais legível no mobile */
+        .message-bubble, .input-container input[type="text"] {
+            font-size: 16px;
         }
 
         /* Tela de Login */
@@ -32,125 +50,52 @@
             padding: 20px;
         }
 
-        #loginScreen h1 {
-            color: white;
-            font-size: 2.8em;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        #loginScreen p {
-            color: rgba(255,255,255,0.95);
-            margin-bottom: 35px;
-            font-size: 1.2em;
-        }
-
-        .login-box {
-            background: white;
-            padding: 35px 25px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 380px;
-        }
-
-        .login-box input {
-            width: 100%;
-            padding: 18px 16px;
-            border: 2px solid #e1e1e1;
-            border-radius: 8px;
-            font-size: 17px;
-            margin-bottom: 16px;
-            transition: border 0.3s;
-        }
-
-        .login-box input:focus {
-            outline: none;
-            border-color: #128C7E;
-        }
-
-        .login-box button {
-            width: 100%;
-            padding: 18px;
-            background: #25D366;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 8px;
-        }
-
-        .login-box button:active {
-            background: #1da851;
-        }
-
-        .error-msg {
-            color: #e74c3c;
-            text-align: center;
-            margin-top: 15px;
-            display: none;
-            font-size: 15px;
-        }
+        #loginScreen h1 { color: white; font-size: 2.8em; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        #loginScreen p { color: rgba(255,255,255,0.95); margin-bottom: 35px; font-size: 1.2em; }
+        .login-box { background: white; padding: 35px 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 100%; max-width: 380px; }
+        .login-box input { width: 100%; padding: 18px 16px; border: 2px solid #e1e1e1; border-radius: 8px; font-size: 17px; margin-bottom: 16px; transition: border 0.3s; }
+        .login-box input:focus { outline: none; border-color: #128C7E; }
+        .login-box button { width: 100%; padding: 18px; background: #25D366; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.3s; margin-top: 8px; }
+        .login-box button:active { background: #1da851; }
+        .error-msg { color: #e74c3c; text-align: center; margin-top: 15px; display: none; font-size: 15px; }
 
         /* Chat Screen */
         #chatScreen {
             display: none;
             height: 100vh;
             flex-direction: column;
-            background: #0a0a0a;
+            background: var(--color-bg-body);
         }
 
         /* Header */
         .chat-header {
-            background: #075E54;
+            background: var(--color-header);
             color: white;
-            padding: 12px 16px;
+            /* OTIMIZAÇÃO: Aumento de Padding para melhor toque */
+            padding: 10px 16px; 
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.4);
             min-height: 60px;
-        }
-
-        .chat-header img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: white;
-        }
-
-        .chat-header h2 {
-            flex: 1;
+            /* OTIMIZAÇÃO: Melhor alinhamento de ícones */
             font-size: 1.15em;
-            font-weight: 500;
         }
 
-        .logout-btn {
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: white;
-            padding: 9px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .logout-btn:active {
-            background: rgba(255,255,255,0.25);
-        }
+        .chat-header img { width: 40px; height: 40px; border-radius: 50%; background: white; }
+        .chat-header h2 { flex: 1; font-size: 1.15em; font-weight: 500; }
+        .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; }
+        .logout-btn:active { background: rgba(255,255,255,0.25); }
 
         /* Messages Area */
         .messages-container {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 12px 8px;
-            background: #0d1418;
-            background-image: 
+            /* OTIMIZAÇÃO: Mais espaço nas laterais */
+            padding: 10px 12px;
+            background: var(--color-bg-chat);
+            background-image:
                 linear-gradient(rgba(13, 20, 24, 0.92), rgba(13, 20, 24, 0.92)),
                 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23ffffff" opacity="0.015" width="100" height="100"/></svg>');
             -webkit-overflow-scrolling: touch;
@@ -162,198 +107,152 @@
             color: rgba(255,255,255,0.4);
         }
 
-        .welcome-message div:first-child {
-            font-size: 70px;
-            margin-bottom: 20px;
-        }
+        .welcome-message div:first-child { font-size: 70px; margin-bottom: 20px; }
+        .welcome-message h3 { color: rgba(255,255,255,0.6); margin-bottom: 12px; font-size: 1.2em; font-weight: 400; }
+        .welcome-message p { font-size: 15px; line-height: 1.6; }
 
-        .welcome-message h3 {
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 12px;
-            font-size: 1.2em;
-            font-weight: 400;
-        }
 
-        .welcome-message p {
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        .message {
-            display: flex;
-            margin-bottom: 8px;
-            animation: slideIn 0.2s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message.sent {
-            justify-content: flex-end;
-        }
+        /* Mensagens */
+        .message { margin-bottom: 10px; animation: slideIn 0.2s ease; } /* OTIMIZAÇÃO: Aumento de margin-bottom */
+        @keyframes slideIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .message.sent { justify-content: flex-end; }
 
         .message-bubble {
-            max-width: 75%;
-            padding: 8px 12px;
-            border-radius: 8px;
+            max-width: 80%; /* OTIMIZAÇÃO: Balões um pouco maiores no mobile */
+            padding: 9px 12px; /* OTIMIZAÇÃO: Aumento de Padding para melhor visual */
+            border-radius: 10px; /* OTIMIZAÇÃO: Mais arredondado */
             position: relative;
             word-wrap: break-word;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            font-size: 15px;
+            line-height: 1.35;
         }
 
         .message.received .message-bubble {
-            background: #1f2c33;
-            color: #e9edef;
-            border-radius: 0 8px 8px 8px;
+            background: var(--color-received);
+            color: var(--color-text);
+            /* OTIMIZAÇÃO: Estilo de balão moderno */
+            border-radius: 0 10px 10px 10px;
             margin-left: 4px;
         }
 
         .message.sent .message-bubble {
-            background: #005c4b;
+            background: var(--color-sent);
             color: white;
-            border-radius: 8px 0 8px 8px;
+            /* OTIMIZAÇÃO: Estilo de balão moderno */
+            border-radius: 10px 0 10px 10px;
             margin-right: 4px;
         }
 
         .message-bubble img,
         .message-bubble video {
             max-width: 100%;
-            border-radius: 6px;
+            border-radius: 8px; /* OTIMIZAÇÃO: Mais arredondado */
             margin-top: 4px;
             display: block;
         }
 
         .message-time {
             font-size: 11px;
-            color: rgba(255,255,255,0.45);
+            color: var(--color-text-sub);
             margin-top: 4px;
             text-align: right;
+            display: block; /* Garante que a hora fique na linha de baixo */
+            line-height: 1;
+            opacity: 0.9;
         }
 
         .message-username {
             font-size: 13px;
-            color: #25D366;
+            color: #60c9a0; /* Tom de verde mais suave para o nome */
             font-weight: 600;
             margin-bottom: 2px;
         }
 
-        /* Input Area - Estilo WhatsApp */
+        /* Input Area - OTIMIZADO PARA MOBILE */
         .input-container {
-            background: #1f2c33;
-            padding: 8px 8px 8px 8px;
+            background: var(--color-bg-chat); /* Fundo do input na mesma cor do chat */
+            padding: 8px; /* OTIMIZAÇÃO: Padding mais uniforme */
             display: flex;
             gap: 6px;
             align-items: flex-end;
-            min-height: 62px;
+            min-height: 60px; /* Altura mínima para melhor toque */
+            /* OTIMIZAÇÃO: Sombra sutil */
+            box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .input-wrapper {
             flex: 1;
-            background: #2a3942;
-            border-radius: 22px;
+            background: var(--color-input-bg);
+            border-radius: 24px; /* OTIMIZAÇÃO: Mais arredondado */
             display: flex;
             align-items: center;
-            padding: 0 12px;
-            min-height: 44px;
+            padding: 0 0 0 12px; /* OTIMIZAÇÃO: Mais espaço à esquerda do input */
+            min-height: 48px; /* OTIMIZAÇÃO: Altura maior para o campo de texto */
+            transition: background 0.3s;
         }
 
         .input-container input[type="text"] {
             flex: 1;
-            padding: 12px 8px;
+            padding: 10px 8px 10px 0; /* OTIMIZAÇÃO: Padding interno ajustado */
             border: none;
             background: transparent;
-            color: #e9edef;
+            color: var(--color-text);
             font-size: 16px;
             outline: none;
+            /* OTIMIZAÇÃO: Quebra de linha automática para mensagens longas */
+            height: auto;
+            min-height: 24px;
         }
 
         .input-container input[type="text"]::placeholder {
-            color: rgba(255,255,255,0.4);
+            color: rgba(255, 255, 255, 0.4);
         }
-
+        
         .attach-btn,
         .send-btn {
             border: none;
-            color: #8696a0;
-            width: 44px;
-            height: 44px;
+            width: 48px; /* OTIMIZAÇÃO: Aumento do tamanho do botão para toque */
+            height: 48px; /* OTIMIZAÇÃO: Aumento do tamanho do botão para toque */
             border-radius: 50%;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            background: transparent;
+            transition: background 0.2s;
         }
 
         .attach-btn {
-            margin-right: 4px;
+            background: transparent;
+            color: #8696a0; /* Cor padrão para o ícone de anexo */
+            margin-right: 0px; /* Removendo margin extra */
+            font-size: 24px; /* Ícone de anexo maior */
         }
 
         .send-btn {
-            background: #25D366;
+            background: var(--color-send-btn);
             color: white;
-            font-size: 20px;
+            font-size: 22px; /* Ícone de enviar maior */
         }
 
-        .send-btn:active {
-            background: #1da851;
-        }
+        .send-btn:active { background: #1da851; }
+        .attach-btn:active { background: rgba(255,255,255,0.05); }
 
-        .attach-btn:active {
-            background: rgba(255,255,255,0.05);
-        }
+        input[type="file"] { display: none; }
 
-        input[type="file"] {
-            display: none;
-        }
+        /* Loading indicator - Sem Alteração Significativa */
+        .loading { text-align: center; color: rgba(255,255,255,0.5); padding: 12px; font-size: 14px; }
+        .loading-spinner { border: 3px solid rgba(255,255,255,0.2); border-top: 3px solid #25D366; border-radius: 50%; width: 32px; height: 32px; animation: spin 0.8s linear infinite; margin: 10px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Loading indicator */
-        .loading {
-            text-align: center;
-            color: rgba(255,255,255,0.5);
-            padding: 12px;
-            font-size: 14px;
-        }
-
-        .loading-spinner {
-            border: 3px solid rgba(255,255,255,0.2);
-            border-top: 3px solid #25D366;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            animation: spin 0.8s linear infinite;
-            margin: 10px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Remover seleção de texto */
-        body {
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        input, textarea {
-            -webkit-user-select: text;
-            user-select: text;
-        }
+        /* Remover seleção de texto - Sem Alteração */
+        body { -webkit-user-select: none; user-select: none; }
+        input, textarea { -webkit-user-select: text; user-select: text; }
     </style>
 </head>
 <body>
-    <!-- Tela de Login -->
     <div id="loginScreen">
         <h1>💬 Chat Box</h1>
         <p>Digite sua senha para entrar</p>
@@ -365,10 +264,9 @@
         </div>
     </div>
 
-    <!-- Tela do Chat -->
     <div id="chatScreen">
         <div class="chat-header">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2325D366'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E💬%3C/text%3E%3C/svg%3E" alt="Chat">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%252325D366'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E💬%3C/text%3E%3C/svg%3E" alt="Chat">
             <h2>Chat Box</h2>
             <button class="logout-btn" onclick="logout()">Sair</button>
         </div>
@@ -378,20 +276,21 @@
                 <div>💬</div>
                 <h3>Bem-vindo ao Chat Box!</h3>
                 <p>Digite uma mensagem ou envie uma foto/vídeo</p>
-                <p style="margin-top: 20px; font-size: 14px;">📎 Enviar mídia<br>✏️ Digite aqui<br>➤ Enviar</p>
             </div>
         </div>
 
         <div class="input-container">
             <button class="attach-btn" onclick="document.getElementById('fileInput').click()">
-                📎
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-paperclip"><path d="M21.44 14.83l-6.09 6.09a5.5 5.5 0 0 1-7.78 0l-1.5-1.5a5.5 5.5 0 0 1 0-7.78l6.09-6.09a5.5 5.5 0 0 1 7.78 0l1.5 1.5a5.5 5.5 0 0 1 0 7.78z"></path></svg>
             </button>
             <input type="file" id="fileInput" accept="image/*,video/*" onchange="handleFileSelect(event)">
+            
             <div class="input-wrapper">
                 <input type="text" id="messageInput" placeholder="Mensagem" onkeypress="if(event.key==='Enter') sendMessage()">
             </div>
+            
             <button class="send-btn" onclick="sendMessage()">
-                ➤
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
             </button>
         </div>
     </div>
@@ -578,9 +477,4 @@
                 e.preventDefault();
                 return false;
             }
-        });
-
-        document.addEventListener('contextmenu', e => e.preventDefault());
-    </script>
-</body>
-</html>
+    
