@@ -332,7 +332,12 @@
         </div>
 
         <div class="messages-container" id="messagesContainer">
-            <!-- Mensagens aparecerão aqui -->
+            <div class="welcome-message" style="text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
+                <div style="font-size: 60px; margin-bottom: 20px;">💬</div>
+                <h3 style="color: rgba(255,255,255,0.7); margin-bottom: 10px;">Bem-vindo ao Chat Box!</h3>
+                <p>Digite uma mensagem abaixo ou envie uma foto/vídeo</p>
+                <p style="margin-top: 20px; font-size: 14px;">📎 = Enviar foto/vídeo<br>✏️ = Digite sua mensagem<br>➤ = Enviar</p>
+            </div>
         </div>
 
         <div class="input-container">
@@ -416,6 +421,13 @@
         // Exibir mensagem
         function displayMessage(message) {
             const container = document.getElementById('messagesContainer');
+            
+            // Remove mensagem de boas-vindas na primeira mensagem
+            const welcomeMsg = container.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.remove();
+            }
+            
             const messageDiv = document.createElement('div');
             messageDiv.className = message.username === currentUser ? 'message sent' : 'message received';
 
