@@ -148,7 +148,7 @@
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 12px 8px;
+            padding: 12px 8px 80px 8px;
             background: #0d1418;
             background-image: 
                 linear-gradient(rgba(13, 20, 24, 0.92), rgba(13, 20, 24, 0.92)),
@@ -247,6 +247,11 @@
 
         /* Input Area - Estilo Moderno Flutuante */
         .input-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
             background: linear-gradient(180deg, rgba(31, 44, 51, 0.95) 0%, rgba(18, 140, 126, 0.15) 100%);
             padding: 12px 16px 16px 16px;
             display: flex;
@@ -254,6 +259,7 @@
             align-items: center;
             min-height: 70px;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
         }
 
         .input-wrapper {
