@@ -135,7 +135,7 @@ footer button {
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
   <script>
-    // ==== CONFIGURAR AQUI ====
+    // ==== CONFIGURAÇÕES ====
     const firebaseConfig = {
       apiKey: "AIzaSyD3UaOcnpccKTDA1Xoc-oQoxvzvNnvevtg",
       authDomain: "chat-8e326.firebaseapp.com",
@@ -145,16 +145,18 @@ footer button {
       messagingSenderId: "1052146549817",
       appId: "1:1052146549817:android:d64a25191233895f4db9e8"
     };
-    // Sua chave de API ImgBB:
-    const IMGBB_API_KEY = "f81413a49f753a0d70b7cdb3fd2dc9"; // troque se quiser outra chave
+
+    // Chave da API ImgBB (use a sua)
+    const IMGBB_API_KEY = "f81413a49f97f53a0d70b7cdb3df2dc9";
     const SENHA_CORRETA = "2000";
-    // =================
+    // =========================
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const chatRef = db.ref("chats/global/messages");
-    let usuario = "Usuário" + Math.floor(Math.random()*1000);
+    let usuario = "Usuário" + Math.floor(Math.random() * 1000);
 
+    // --- Login simples ---
     window.entrarChat = function() {
       const senha = document.getElementById("senha").value;
       if (senha === SENHA_CORRETA) {
@@ -163,16 +165,15 @@ footer button {
       } else {
         document.getElementById("erro-senha").style.display = "";
       }
-    }
+    };
 
+    // --- Exibir mensagens ---
     function renderizarMensagem(msg, eu) {
       const div = document.createElement('div');
       div.className = "mensagem" + (eu ? " eu" : "");
-      if (msg.text) {
-        div.textContent = msg.text;
-      }
+      if (msg.text) div.textContent = msg.text;
       if (msg.imageUrl) {
-        if(msg.text) div.appendChild(document.createElement('br'));
+        if (msg.text) div.appendChild(document.createElement('br'));
         const img = document.createElement('img');
         img.src = msg.imageUrl;
         img.alt = "imagem enviada";
@@ -188,19 +189,18 @@ footer button {
     chatRef.orderByChild("timestamp").limitToLast(50).on("value", snapshot => {
       chatBox.innerHTML = "";
       const mensagens = [];
-      snapshot.forEach(child => {
-        mensagens.push(child.val());
-      });
+      snapshot.forEach(child => mensagens.push(child.val()));
       mensagens.reverse();
       mensagens.forEach(msg => {
-        chatBox.appendChild(renderizarMensagem(msg, msg.sender==usuario));
+        chatBox.appendChild(renderizarMensagem(msg, msg.sender == usuario));
       });
     });
 
+    // --- Enviar texto ---
     window.enviarMensagem = async function () {
       const input = document.getElementById("texto-mensagem");
-      const texto = input.value;
-      if (texto.trim() === "") return;
+      const texto = input.value.trim();
+      if (!texto) return;
       const msgObj = {
         text: texto,
         imageUrl: null,
@@ -209,32 +209,47 @@ footer button {
       };
       await chatRef.push(msgObj);
       input.value = "";
-    }
+    };
 
+    // --- Enviar imagem via ImgBB ---
     document.getElementById("upload-img").addEventListener("change", async function(e){
       const file = e.target.files[0];
       if (!file) return;
-      const formData = new FormData();
-      formData.append('key', IMGBB_API_KEY);
-      formData.append('image', file);
-      try {
-        const resp = await fetch("https://api.imgbb.com/1/upload", { method: "POST", body: formData });
-        const data = await resp.json();
-        if (data && data.data && data.data.url) {
-          const msgObj = {
-            text: "",
-            imageUrl: data.data.url,
-            sender: usuario,
-            timestamp: Date.now()
-          };
-          await chatRef.push(msgObj);
-        } else {
-          alert("Falha ao enviar imagem!");
+
+      const reader = new FileReader();
+      reader.onloadend = async function() {
+        const base64 = reader.result.split(',')[1];
+        const formData = new FormData();
+        formData.append('key', IMGBB_API_KEY);
+        formData.append('image', base64);
+
+        try {
+          const resp = await fetch("https://api.imgbb.com/1/upload", {
+            method: "POST",
+            body: formData
+          });
+          const data = await resp.json();
+
+          if (data && data.data && data.data.url) {
+            const msgObj = {
+              text: "",
+              imageUrl: data.data.url,
+              sender: usuario,
+              timestamp: Date.now()
+            };
+            await chatRef.push(msgObj);
+          } else {
+            console.error("Erro ImgBB:", data);
+            alert("Falha ao enviar imagem!");
+          }
+        } catch (err) {
+          console.error("Erro:", err);
+          alert("Erro no upload da imagem: " + err.message);
         }
-      } catch (err) {
-        alert("Erro no upload da imagem: " + err.message);
-      }
-      e.target.value = "";
+        e.target.value = "";
+      };
+
+      reader.readAsDataURL(file);
     });
   </script>
 </body>
